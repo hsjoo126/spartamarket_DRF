@@ -25,6 +25,8 @@ class ProductListAPIView(APIView):
 
 class ProductDetailAPIView(APIView):
     
+    permission_classes = [IsAuthenticated]
+
     def get_object(self, productsID):
         return get_object_or_404(Products, pk=productsID)
 
