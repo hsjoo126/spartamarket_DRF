@@ -22,4 +22,16 @@ class ProductListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-        
+
+class ProductDetailAPIView(APIView):
+    
+    def get_object(self, productsID):
+        return get_object_or_404(Products, pk=productsID)
+
+    def put(self, request, productsID):
+        product = self.get_object(productsID)
+        serializer = ProductsSerializer(
+            product, data=request.data, partial=True)  # 원래 있던 데이터 넣어주기, 부분 설정 가능!
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
