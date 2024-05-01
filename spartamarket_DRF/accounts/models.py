@@ -5,8 +5,18 @@ from django.contrib.auth.models import AbstractUser
 #장고 기본 제공 : username, 비밀번호, 이름(first,last), 이메일
 #추가 모델은 : 닉네임, 생일
 #이메일, 이름
+
 class User(AbstractUser):
+
+    GENDER_CHOICES = [
+        ("M" , "남성"),
+        ("F" , "여성")
+    ]
+
     name = models.CharField(max_length=10)
     email =  models.EmailField()
     nickname = models.CharField(max_length=20)
     birthday = models.DateField()
+    gender = models.CharField(max_length=5, choices=GENDER_CHOICES)
+    introduce = models.TextField()
+

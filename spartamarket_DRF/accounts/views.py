@@ -27,3 +27,6 @@ class AccountListAPIView(APIView):
         user = get_object_or_404(User,username = username) # 한 유저만 가져오기
         serializer = AccountsSerializer(user)
         return Response(serializer.data)
+    
+class LogoutAPIView(APIView):
+    pass
