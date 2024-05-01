@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts',
     'products',
     "django_seed",
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [

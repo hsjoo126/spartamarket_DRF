@@ -6,7 +6,7 @@ from .serializers import AccountsSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from django.contrib.auth import get_user_model
-
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class AccountListAPIView(APIView):
 
@@ -27,6 +27,3 @@ class AccountListAPIView(APIView):
         user = get_object_or_404(User,username = username) # 한 유저만 가져오기
         serializer = AccountsSerializer(user)
         return Response(serializer.data)
-    
-class LogoutAPIView(APIView):
-    pass
