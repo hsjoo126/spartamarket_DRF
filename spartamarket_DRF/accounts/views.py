@@ -10,6 +10,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 class AccountListAPIView(APIView):
 
+    def get_object(self, userID):
+        return get_object_or_404(User, id=userID)
+    
     def post(self, request):
         # 회원가입하기
         serializer = AccountsSerializer(data=request.data)
@@ -23,7 +26,16 @@ class AccountListAPIView(APIView):
             user.save()  # 조작한 데이터를 DB에 저장
             return Response(data, status=status.HTTP_201_CREATED)
     
-    def get(self, request, username):
-        user = get_object_or_404(User,username = username) # 한 유저만 가져오기
+    def get(self, request,username):
+        user = get_object_or_404(User, username=username) # 한 유저만 가져오기
         serializer = AccountsSerializer(user)
         return Response(serializer.data)
+    
+    def delete(self, request):
+        user = request.user
+        password = request.data['password']
+        if user.check_password(password): #해싱이 안 된 애를 가져다 쓴다
+            user.delete()
+            return Response()
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+ 
