@@ -22,3 +22,8 @@ class AccountListAPIView(APIView):
             user.set_password(request.data.get('password'))# 입력한 패스워드를 가져오고, set_password 메소드가 알아서 암호화를 해서 할당해준다
             user.save()  # 조작한 데이터를 DB에 저장
             return Response(data, status=status.HTTP_201_CREATED)
+    
+    def get(self, request, username):
+        user = get_object_or_404(User,username = username) # 한 유저만 가져오기
+        serializer = AccountsSerializer(user)
+        return Response(serializer.data)
