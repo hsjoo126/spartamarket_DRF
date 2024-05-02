@@ -51,3 +51,18 @@ class ProductDetailAPIView(APIView):
         product = self.get_object(productsID)
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class LikeAPIView(APIView):
+
+    def get_object(self, productsID):
+        return get_object_or_404(Products, pk=productsID)
+    
+    def post(self, request, productsID):
+        product = self.get_object(productsID)
+        if product.like_users.filter(pk=request.user.pk).exists():
+            product.like_users.remove(request.user)
+        else:
+            product.like_users.add(request.user)
+            return Response()
+
+    #1. 상품 하나 가져오기
