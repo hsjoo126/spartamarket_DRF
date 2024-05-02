@@ -1,20 +1,22 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from .models import Products
 from .serializers import ProductsSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
+from rest_framework.pagination import PageNumberPagination
 
-class ProductListAPIView(APIView):
-    
+
+
+class ProductListAPIView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
-    
-    def get(self, request):
-        products = Products.objects.all()
-        serializer = ProductsSerializer(products, many=True)
-        return Response(serializer.data)
-    
+    pagination_class = PageNumberPagination
+    serializer_class = ProductsSerializer
+
+    def get_queryset(self):
+        return Products.objects.all()
 
     def post(self, request):
         serializer = ProductsSerializer(data=request.data)
@@ -33,7 +35,7 @@ class ProductDetailAPIView(APIView):
     def put(self, request, productsID):
         product = self.get_object(productsID)
         serializer = ProductsSerializer(
-            product, data=request.data, partial=True)  # 원래 있던 데이터 넣어주기, 부분 설정 가능!
+            product, data=request.data, partial=True) 
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
@@ -42,3 +44,18 @@ class ProductDetailAPIView(APIView):
         product = self.get_object(productsID)
         product.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class LikeAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self, productsID):
+        return get_object_or_404(Products, pk=productsID)
+    
+    def post(self, request, productsID):
+        product = self.get_object(productsID)
+        if product.like_users.filter(pk=request.user.pk).exists():
+            product.like_users.remove(request.user)
+        else:
+            product.like_users.add(request.user)
+            return Response()
