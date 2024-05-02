@@ -4,5 +4,4 @@ from .models import Products
 class ProductsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
-        fields = '__all__'
-        
+        exclude = ['like_users']
