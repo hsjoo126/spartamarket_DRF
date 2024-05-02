@@ -1,19 +1,28 @@
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from .models import Products
 from .serializers import ProductsSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated,IsAuthenticatedOrReadOnly
+from rest_framework.pagination import PageNumberPagination
 
-class ProductListAPIView(APIView):
-    
+
+
+
+
+class ProductListAPIView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
-    
-    def get(self, request):
-        products = Products.objects.all()
-        serializer = ProductsSerializer(products, many=True)
-        return Response(serializer.data)
+    pagination_class = PageNumberPagination
+    serializer_class = ProductsSerializer
+
+    def get_queryset(self):
+        return Products.objects.all()
+    # def get(self, request):
+    #     products = Products.objects.all()
+    #     serializer = ProductsSerializer(products, many=True)
+    #     return Response(serializer.data)
     
 
     def post(self, request):
