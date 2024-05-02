@@ -10,8 +10,6 @@ from rest_framework.pagination import PageNumberPagination
 
 
 
-
-
 class ProductListAPIView(ListAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = PageNumberPagination
@@ -19,11 +17,6 @@ class ProductListAPIView(ListAPIView):
 
     def get_queryset(self):
         return Products.objects.all()
-    # def get(self, request):
-    #     products = Products.objects.all()
-    #     serializer = ProductsSerializer(products, many=True)
-    #     return Response(serializer.data)
-    
 
     def post(self, request):
         serializer = ProductsSerializer(data=request.data)
@@ -42,7 +35,7 @@ class ProductDetailAPIView(APIView):
     def put(self, request, productsID):
         product = self.get_object(productsID)
         serializer = ProductsSerializer(
-            product, data=request.data, partial=True)  # 원래 있던 데이터 넣어주기, 부분 설정 가능!
+            product, data=request.data, partial=True) 
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
@@ -54,6 +47,8 @@ class ProductDetailAPIView(APIView):
     
 class LikeAPIView(APIView):
 
+    permission_classes = [IsAuthenticated]
+
     def get_object(self, productsID):
         return get_object_or_404(Products, pk=productsID)
     
@@ -64,5 +59,3 @@ class LikeAPIView(APIView):
         else:
             product.like_users.add(request.user)
             return Response()
-
-    #1. 상품 하나 가져오기
