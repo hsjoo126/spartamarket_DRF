@@ -58,4 +58,4 @@ class LikeAPIView(APIView):
             product.like_users.remove(request.user)
         else:
             product.like_users.add(request.user)
-            return Response()
+        return Response(status=status.HTTP_200_OK)
